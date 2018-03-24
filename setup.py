@@ -1,4 +1,24 @@
 from setuptools import setup, find_packages
+from setuptools.command.install import install
+from subprocess import check_call
+
+
+class PostInstall(install):
+    """Post installation steps.
+
+    1. Install the notebook extension using jupyter nbextension install
+    2. Enable the extension using jupyter nbextension enable
+    """
+
+    def run(self):
+        # Do the usual install step
+        install.run(self)
+
+        # Register and install ourselves with jupyter
+        check_call(["jupyter", "nbextension", "install",
+                    "--py", "--symlink", "--sys-prefix", "topos.ext.preview"])
+        check_call(["jupyter", "nbextension", "enable",
+                    "--py", "--sys-prefix", "topos.ext.preview"])
 
 
 def readme():
@@ -32,6 +52,9 @@ setup(name='topos-preview',
       setup_requires=['pytest-runner'],
       test_suite='tests',
       tests_require=['pytest', 'hypothesis'],
+      cmdclass={
+          'install': PostInstall
+      },
       python_requires='>=3.0',
       include_package_data=True,
       zip_safe=False)
