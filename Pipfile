@@ -8,6 +8,8 @@ name = "pypi"
 [packages]
 
 "069be8f" = {path = "/home/alex/Projects/topos-preview/topos"}
+jupyter = "*"
+ipywidgets = "*"
 
 
 [dev-packages]
