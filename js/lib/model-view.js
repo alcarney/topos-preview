@@ -27,11 +27,31 @@ const ModelView = widgets.DOMWidgetView.extend({
         var wireframe = new THREE.WireframeGeometry(geometry);
         var line = new THREE.LineSegments(wireframe);
 
-        line.material.depthTest = false;
-        line.material.opacity = 0.25;
+        line.material.depthTest = true;
+        line.material.opacity = 0.5;
         line.material.transparent = true;
 
         return line;
+    },
+
+    // Returns our standard "preview" material
+    makeMaterial: function() {
+        var material = new THREE.MeshStandardMaterial();
+        material.color = new THREE.Color(0xe7844c);
+
+        return material;
+    },
+
+    // Set up our lighting
+    initLights: function(scene) {
+        var ambient = new THREE.AmbientLight(0x848484);
+        scene.add(ambient);
+
+        var directional = new THREE.DirectionalLight(0xffffff, 0.5);
+        directional.position.z = 1;
+        directional.position.x = 0;
+        directional.position.y = 0;
+        scene.add(directional);
     },
 
     initView: function() {
@@ -48,9 +68,11 @@ const ModelView = widgets.DOMWidgetView.extend({
         renderer.setSize(width, height);
         this.el.appendChild(renderer.domElement);
 
+        this.initLights(scene);
+
         var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        var cube = new THREE.Mesh(geometry, material);
+        var cube = new THREE.Mesh(geometry, this.makeMaterial());
+        cube.position.z = 0.5;
         scene.add(cube)
 
         var controls = new OrbitControls(camera, renderer.domElement);
