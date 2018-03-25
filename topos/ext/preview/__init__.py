@@ -1,4 +1,4 @@
-from .widgets import HelloWidget
+from .widgets import HelloWidget, ModelWidget
 from .version import __version__
 
 

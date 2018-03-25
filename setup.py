@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 from setuptools.command.install import install
+from setuptools.command.develop import develop
 from subprocess import check_call
 
 
@@ -16,6 +17,25 @@ class PostInstall(install):
 
         # Register and install ourselves with jupyter
         check_call(["jupyter", "nbextension", "install",
+                    "--py", "--symlink", "--sys-prefix", "topos.ext.preview"])
+        check_call(["jupyter", "nbextension", "enable",
+                    "--py", "--sys-prefix", "topos.ext.preview"])
+
+
+class PostDevelop(develop):
+    """Post develop steps.
+
+    1. Install the notebook extension using jupyter nbextension develop
+    2. Enable the extension using jupyter nbextension enable
+    """
+
+    def run(self):
+
+        # Do the usual develop step
+        develop.run(self)
+
+        # Register and develop ourselves with jupyter
+        check_call(["jupyter", "nbextension", "develop", "--overwrite",
                     "--py", "--symlink", "--sys-prefix", "topos.ext.preview"])
         check_call(["jupyter", "nbextension", "enable",
                     "--py", "--sys-prefix", "topos.ext.preview"])
