@@ -8,3 +8,4 @@ npm install
 
 cd $ROOT
 pip install -e .
+jupyter notebook --no-browser

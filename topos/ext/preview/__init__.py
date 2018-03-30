@@ -1,4 +1,4 @@
-from .widgets import HelloWidget, ModelWidget
+from .pmesh import PMesh
 from .version import __version__
 
 

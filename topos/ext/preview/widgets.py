@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from traitlets import Unicode, validate
+from traitlets import Unicode, List
 
 from .version import __version__
 
@@ -21,4 +21,5 @@ class ModelWidget(widgets.DOMWidget):
     _view_module = Unicode("topos-previewjs").tag(sync=True)
     _view_module_version = Unicode(__version__).tag(sync=True)
 
-    modelname = Unicode("modelview").tag(sync=True)
+    vertices = List([[1., 2., 3.], [4., 5., 6.]]).tag(sync=True)
+    faces = List([[1, 2, 3, 4], [5, 6, 7, 8]]).tag(sync=True)

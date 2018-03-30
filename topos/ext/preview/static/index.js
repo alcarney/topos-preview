@@ -46411,20 +46411,45 @@ const ModelView = widgets.DOMWidgetView.extend({
     // Returns our standard "preview" material
     makeMaterial: function() {
         var material = new THREE.MeshStandardMaterial();
-        material.color = new THREE.Color(0xe7844c);
+        material.color = new THREE.Color(0xeeeeee);
+        material.side = THREE.DoubleSide;
+        material.roughness = 0
 
         return material;
     },
 
+    makeGeometry: function() {
+        var geometry = new THREE.Geometry();
+        var vertices = this.model.get("vertices");
+        var faces = this.model.get("faces");
+
+        vertices.forEach(function (item, index) {
+            var vertex = new THREE.Vector3(item[0], item[1], item[2]);
+            geometry.vertices.push(vertex);
+        });
+
+        faces.forEach(function (item, index) {
+            var face = new THREE.Face3(item[0], item[1], item[2]);
+            geometry.faces.push(face);
+        })
+
+        geometry.computeFaceNormals();
+        geometry.computeVertexNormals();
+
+        console.log(geometry);
+
+        return geometry;
+    },
+
     // Set up our lighting
     initLights: function(scene) {
-        var ambient = new THREE.AmbientLight(0x848484);
+        var ambient = new THREE.AmbientLight(0xeeeeee);
         scene.add(ambient);
 
-        var directional = new THREE.DirectionalLight(0xffffff, 0.5);
-        directional.position.z = 1;
-        directional.position.x = 0;
-        directional.position.y = 0;
+        var directional = new THREE.DirectionalLight(0xffffff, 2);
+        directional.position.z = 0;
+        directional.position.x = 1;
+        directional.position.y = 1;
         scene.add(directional);
     },
 
@@ -46443,11 +46468,8 @@ const ModelView = widgets.DOMWidgetView.extend({
         this.el.appendChild(renderer.domElement);
 
         this.initLights(scene);
-
-        var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var cube = new THREE.Mesh(geometry, this.makeMaterial());
-        cube.position.z = 0.5;
-        scene.add(cube)
+        var model = new THREE.Mesh(this.makeGeometry(), this.makeMaterial());
+        scene.add(model)
 
         var controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
@@ -46463,12 +46485,10 @@ const ModelView = widgets.DOMWidgetView.extend({
             controls.update();
             renderer.render(scene, camera)
         }
-
+        this.scene = scene
         animate();
 
     }
-
-
 });
 
 module.exports = {

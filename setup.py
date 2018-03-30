@@ -22,25 +22,6 @@ class PostInstall(install):
                     "--py", "--sys-prefix", "topos.ext.preview"])
 
 
-class PostDevelop(develop):
-    """Post develop steps.
-
-    1. Install the notebook extension using jupyter nbextension develop
-    2. Enable the extension using jupyter nbextension enable
-    """
-
-    def run(self):
-
-        # Do the usual develop step
-        develop.run(self)
-
-        # Register and develop ourselves with jupyter
-        check_call(["jupyter", "nbextension", "develop", "--overwrite",
-                    "--py", "--symlink", "--sys-prefix", "topos.ext.preview"])
-        check_call(["jupyter", "nbextension", "enable",
-                    "--py", "--sys-prefix", "topos.ext.preview"])
-
-
 def readme():
     with open("README.rst") as f:
         return f.read()
@@ -64,8 +45,9 @@ setup(name='topos-preview',
       author='Alex Carney',
       author_email="alcarneyme@gmail.com",
       license='MIT',
-      packages=find_packages(exclude="tests"),
+      packages=['topos.ext.preview'],
       install_requires=[
+          'numpy',
           'topos',
           'jupyter'
       ],
